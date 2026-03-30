@@ -11,7 +11,7 @@ Set WshShell = CreateObject("WScript.Shell")
 
 HerdPath = "C:\Program Files\Herd\Herd.exe"
 EdgePath = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-AppURL = "http://class-record.test"
+AppURL = "http://class-record-client.test"
 
 ' --- Configuration ---
 Timeout = 30          ' Maximum seconds to wait for the server

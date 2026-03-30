@@ -1,24 +1,28 @@
 @echo off
+setlocal enabledelayedexpansion
+
+set step=1
+
 echo ========================================
 echo Setting up Class Record Application
 echo ========================================
 echo.
 
-echo 1. Checking Herd status...
+echo !step!. Checking Herd status...
+set /a step+=1
 tasklist /FI "IMAGENAME eq Herd.exe" /NH
 echo.
 
-echo 2. Starting Herd if not running...
+echo !step!. Starting Herd if not running...
+set /a step+=1
 if not exist "C:\Program Files\Herd\Herd.exe" (
     echo Herd not installed! Installing Herd...
     echo.
-    
-    :: Find the Herd installer in the current directory
     if exist "%~dp0Herd-1.27.0-setup.exe" (
         echo Running Herd installer...
         "%~dp0Herd-1.27.0-setup.exe" /S
         echo Herd installation complete.
-        timeout /t 2 /nobreak > nul
+        timeout /t 5 /nobreak > nul
     ) else (
         echo ERROR: Herd installer not found!
         echo Please install Herd manually from https://herd.laravel.com
@@ -27,55 +31,64 @@ if not exist "C:\Program Files\Herd\Herd.exe" (
     )
 )
 
-:: Now check again after installation or if already installed
 tasklist /FI "IMAGENAME eq Herd.exe" /NH | find /I "Herd.exe" > nul
 if errorlevel 1 (
     echo Starting Herd...
     start "" "C:\Program Files\Herd\Herd.exe"
-    timeout /t 3 /nobreak > nul
+    timeout /t 5 /nobreak > nul
 ) else (
     echo Herd is already running.
 )
 echo.
 
-echo 3. Parking the parent folder...
+echo !step!. Parking the parent folder...
+set /a step+=1
 cd /d "%USERPROFILE%\Documents\Class Record"
 echo Adding path to Herd...
-echo y | herd park > nul 2>&1
+echo y | herd park
 echo Path added successfully.
-timeout /t 1 /nobreak > nul
-echo.
 
-echo 4. Changing to application directory...
+echo.
+echo !step!. Changing to application directory...
+set /a step+=1
 echo Current batch file location: %~dp0
 cd /d "%~dp0"
 echo Now in: %cd%
-echo.
 
-echo 5. Running database migrations...
-echo Running migrations...
+echo.
+echo !step!. Updating .env for production...
+set /a step+=1
+
+set "ENV_FILE=%~dp0.env"
+set "TEMP_FILE=%~dp0.env.tmp"
+
+if exist "!ENV_FILE!" (
+    break > "!TEMP_FILE!"
+    for /f "usebackq delims=" %%A in ("!ENV_FILE!") do (
+        set "line=%%A"
+        if "!line:~0,8!"=="APP_URL=" set "line=APP_URL=http://class-record-client.test"
+        if "!line:~0,8!"=="APP_ENV=" set "line=APP_ENV=production"
+        if "!line:~0,10!"=="APP_DEBUG=" set "line=APP_DEBUG=false"
+        if "!line:~0,18!"=="DEBUGBAR_ENABLED=" set "line=DEBUGBAR_ENABLED=false"
+        if "!line:~0,18!"=="TELESCOPE_ENABLED=" set "line=TELESCOPE_ENABLED=false"
+        echo(!line!>>"!TEMP_FILE!"
+    )
+    move /Y "!TEMP_FILE!" "!ENV_FILE!" > nul
+    echo OK
+) else (
+    echo WARNING: .env file not found! Skipping update.
+)
+
+echo.
+echo !step!. Running database migrations... PLEASE WAIT, THIS MAY TAKE A WHILE...
+set /a step+=1
 cmd /c "php artisan migrate --force --step"
-echo.
 
-echo 6. Clearing caches...
-cmd /c "php artisan optimize:clear"
 echo.
-
-echo 7. Building frontend assets...
-cmd /c "npm run build < nul"
-echo.
-
-echo 8. Optimizing application...
-cmd /c "php artisan optimize"
-echo.
-
-echo 9. Launching application...
+echo !step!. Launching application...
+set /a step+=1
 start wscript.exe "launch.vbs"
-echo.
+timeout /t 2 /nobreak > nul
 
-echo ========================================
-echo Setup Complete!
-echo ========================================
-echo Reached the end! Closing in 5 seconds...
-timeout /t 5 /nobreak > nul
+echo.
 exit /b 0
