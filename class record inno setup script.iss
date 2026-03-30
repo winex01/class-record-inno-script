@@ -15,7 +15,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={userdocs}\{#MyAppName}\class-record-client
 DefaultGroupName={#MyAppName}
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=D:\
+OutputDir=D:\inno setups scripts\class-record\
 OutputBaseFilename=class-record-setup v.{#MyAppVersion}
 SetupIconFile=D:\inno setups scripts\class-record\icon.ico
 UninstallDisplayIcon={app}\icon.ico
@@ -39,8 +39,8 @@ Source: "D:\inno setups scripts\class-record\install.bat"; DestDir: "{app}"; Fla
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Laravel Herd"; ValueData: """C:\Program Files\Herd\Herd.exe"""; Flags: uninsdeletevalue
 
 [Icons]
-Name: "{commondesktop}\{#MyAppName}"; Filename: "wscript.exe"; Parameters: """{app}\launch.vbs"""; IconFilename: "{app}\icon.ico"
-Name: "{group}\{#MyAppName}"; Filename: "wscript.exe"; Parameters: """{app}\launch.vbs"""; IconFilename: "{app}\icon.ico"
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{code:GetEdgePath}"; Parameters: "--app=http://class-record-client.test"; IconFilename: "{app}\icon.ico"
+Name: "{group}\{#MyAppName}"; Filename: "{code:GetEdgePath}"; Parameters: "--app=http://class-record-client.test"; IconFilename: "{app}\icon.ico"
 
 [Run]
 Filename: "{app}\install.bat"; StatusMsg: "Setting up your application..."; Flags: waituntilterminated
@@ -49,4 +49,24 @@ Filename: "{app}\install.bat"; StatusMsg: "Setting up your application..."; Flag
 function HerdIsInstalled(): Boolean;
 begin
   Result := FileExists(ExpandConstant('C:\Program Files\Herd\Herd.exe'));
+end;
+
+function GetEdgePath(Param: string): string;
+var
+  EdgePath: string;
+begin
+  // Try 64-bit Edge first
+  EdgePath := ExpandConstant('{pf64}\Microsoft\Edge\Application\msedge.exe');
+  if FileExists(EdgePath) then
+    Result := EdgePath
+  else
+  begin
+    // Fall back to 32-bit Edge
+    EdgePath := ExpandConstant('{pf32}\Microsoft\Edge\Application\msedge.exe');
+    if FileExists(EdgePath) then
+      Result := EdgePath
+    else
+      // Final fallback to system32 (sometimes Edge is there)
+      Result := 'msedge.exe';
+  end;
 end;
