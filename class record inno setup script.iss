@@ -27,13 +27,13 @@ PrivilegesRequired=admin
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "D:\Herd\class-record\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: ".env,*.sqlite,storage\app\public\*,storage\app\private\*,storage\logs\*,storage\framework\sessions\*"
+Source: "D:\Herd\class-record\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; \
+Excludes: ".env,*.sqlite,storage\logs\*,storage\framework\cache\*,storage\framework\sessions\*,storage\framework\views\*,storage\app\public\*,storage\app\private\*"
 Source: "D:\Herd\class-record\.env.example"; DestDir: "{app}"; DestName: ".env"; Flags: ignoreversion
 Source: "D:\installer\Herd-1.27.0-setup.exe"; DestDir: "{app}"; Flags: deleteafterinstall; Check: not HerdIsInstalled()
-Source: "D:\installer\Herd-1.27.0-setup.exe"; DestDir: "{app}"; Flags: deleteafterinstall; Check: not HerdIsInstalled()
 Source: "D:\inno setups scripts\class-record\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\inno setups scripts\class-record\launch.vbs"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\inno setups scripts\class-record\install.bat"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "D:\inno setups scripts\class-record\launch.vbs"; DestDir: "{app}"; Flags: ignoreversion
 
 [Registry]
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Laravel Herd"; ValueData: """C:\Program Files\Herd\Herd.exe"""; Flags: uninsdeletevalue
