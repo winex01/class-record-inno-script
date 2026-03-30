@@ -1,24 +1,28 @@
 @echo off
+setlocal enabledelayedexpansion
+
+set step=1
+
 echo ========================================
 echo Setting up Class Record Application
 echo ========================================
 echo.
 
-echo Checking Herd status...
+echo !step!. Checking Herd status...
+set /a step+=1
 tasklist /FI "IMAGENAME eq Herd.exe" /NH
 echo.
 
-echo Starting Herd if not running...
+echo !step!. Starting Herd if not running...
+set /a step+=1
 if not exist "C:\Program Files\Herd\Herd.exe" (
     echo Herd not installed! Installing Herd...
     echo.
-    
-    :: Find the Herd installer in the current directory
     if exist "%~dp0Herd-1.27.0-setup.exe" (
         echo Running Herd installer...
         "%~dp0Herd-1.27.0-setup.exe" /S
         echo Herd installation complete.
-        timeout /t 2 /nobreak > nul
+        timeout /t 5 /nobreak > nul
     ) else (
         echo ERROR: Herd installer not found!
         echo Please install Herd manually from https://herd.laravel.com
@@ -27,43 +31,44 @@ if not exist "C:\Program Files\Herd\Herd.exe" (
     )
 )
 
-:: Now check again after installation or if already installed
 tasklist /FI "IMAGENAME eq Herd.exe" /NH | find /I "Herd.exe" > nul
 if errorlevel 1 (
     echo Starting Herd...
     start "" "C:\Program Files\Herd\Herd.exe"
-    timeout /t 3 /nobreak > nul
+    timeout /t 5 /nobreak > nul
 ) else (
     echo Herd is already running.
 )
 echo.
 
-echo Parking the parent folder...
+echo !step!. Parking the parent folder...
+set /a step+=1
 cd /d "%USERPROFILE%\Documents\Class Record"
 echo Adding path to Herd...
-echo y | herd park > nul 2>&1
+echo y | herd park
 echo Path added successfully.
-timeout /t 1 /nobreak > nul
-echo.
 
-echo Changing to application directory...
+echo.
+echo !step!. Changing to application directory...
+set /a step+=1
 echo Current batch file location: %~dp0
 cd /d "%~dp0"
 echo Now in: %cd%
-echo.
 
-echo  Running database migrations...
-echo Running migrations...
+echo.
+echo !step!. Running database migrations... PLEASE WAIT, THIS MAY TAKE A WHILE...
+set /a step+=1
 cmd /c "php artisan migrate --force --step"
-echo.
 
 echo.
-echo Launching application...
+echo !step!. Launching application...
+set /a step+=1
 start "" msedge.exe --app=http://class-record-client.test
 
+echo.
 echo ========================================
-echo Setup Complete!
+echo Application launched successfully!
+echo This window will close in 5 seconds...
 echo ========================================
-echo Reached the end! Closing in 5 seconds...
 timeout /t 5 /nobreak > nul
-exit /b 0
+exit
