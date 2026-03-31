@@ -28,12 +28,11 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: "D:\Herd\class-record\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; \
-Excludes: ".env,*.sqlite,storage\logs\*,storage\framework\cache\*,storage\framework\sessions\*,storage\framework\views\*,storage\app\public\*,storage\app\private\*"
+Excludes: ".env,*.sqlite,node_modules\*,storage\logs\*,storage\framework\cache\*,storage\framework\sessions\*,storage\framework\views\*,storage\app\public\*,storage\app\private\*"
 Source: "D:\Herd\class-record\.env.example"; DestDir: "{app}"; DestName: ".env"; Flags: ignoreversion
 Source: "D:\installer\Herd-1.27.0-setup.exe"; DestDir: "{app}"; Flags: deleteafterinstall; Check: not HerdIsInstalled()
 Source: "D:\inno setups scripts\class-record\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\inno setups scripts\class-record\install.bat"; DestDir: "{app}"; Flags: ignoreversion
-; Source: "D:\inno setups scripts\class-record\launch.vbs"; DestDir: "{app}"; Flags: ignoreversion
 
 [Registry]
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Laravel Herd"; ValueData: """C:\Program Files\Herd\Herd.exe"""; Flags: uninsdeletevalue
@@ -43,6 +42,11 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{code:GetEdgePath}"; Parameters
 Name: "{group}\{#MyAppName}"; Filename: "{code:GetEdgePath}"; Parameters: "--app=http://class-record-client.test"; IconFilename: "{app}\icon.ico"
 
 [Run]
+; Install Herd silently if not already installed
+Filename: "{app}\Herd-1.27.0-setup.exe"; Parameters: "/S"; StatusMsg: "Installing Laravel Herd..."; \
+  Flags: waituntilterminated; Check: not HerdIsInstalled()
+
+; Run your app's setup bat after dependencies are ready
 Filename: "{app}\install.bat"; StatusMsg: "Setting up your application..."; Flags: waituntilterminated
 
 [Code]
@@ -55,18 +59,15 @@ function GetEdgePath(Param: string): string;
 var
   EdgePath: string;
 begin
-  // Try 64-bit Edge first
   EdgePath := ExpandConstant('{pf64}\Microsoft\Edge\Application\msedge.exe');
   if FileExists(EdgePath) then
     Result := EdgePath
   else
   begin
-    // Fall back to 32-bit Edge
     EdgePath := ExpandConstant('{pf32}\Microsoft\Edge\Application\msedge.exe');
     if FileExists(EdgePath) then
       Result := EdgePath
     else
-      // Final fallback to system32 (sometimes Edge is there)
       Result := 'msedge.exe';
   end;
 end;
