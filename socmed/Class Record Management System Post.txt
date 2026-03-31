@@ -1,0 +1,26 @@
+Class Record Management System
+
+Feature:
+- Student Record 
+- Stand Alone no need internet just need to download installer from link below
+- Create class subject and can assign existing/old students or new student.
+- Attendance
+- Lessons
+- Assessments
+- Fee Collections (Track contributions)
+- Grades (by grading period)
+- Exports (Excel and dynamic)
+- For Class Subject you can clone it and check to copy 
+	- Students (check if you have the same students but different subject)
+	- Assessments (check if you have the same assessment for next year )
+	- Lessons (check if you have same lessons for next batch of student or next year)
+	- Grading Settings (same subject criteria like: Written works, Performance Task, Quarterly Assessment)
+- And more...
+
+
+Download Link:
+https://drive.google.com/file/d/1PJlK9_p5sjKbDtmaIt5xHJuIsj81SAo9/view?usp=sharing
+
+License: share FB post = 1 License, AHAHAHA. just DM/PM me.
+
+DM/PM: https://www.facebook.com/winex01
