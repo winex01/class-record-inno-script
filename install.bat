@@ -17,14 +17,31 @@ echo.
 :: Start Herd if not running
 :: ----------------------------------------
 echo Checking Herd status...
-tasklist /FI "IMAGENAME eq Herd.exe" /NH | find /I "Herd.exe" > nul
+
+:: Check if Herd's web server is responding
+curl -s --connect-timeout 2 http://localhost > nul 2>&1
 if errorlevel 1 (
-    echo Starting Herd...
-    powershell -Command "Start-Process 'C:\Program Files\Herd\Herd.exe' -WindowStyle Hidden"
-    echo Waiting for Herd to initialize...
-    timeout /t 8 /nobreak > nul
+    echo Herd not responding, checking if process exists...
+    tasklist /FI "IMAGENAME eq Herd.exe" /NH | find /I "Herd.exe" > nul
+    if errorlevel 1 (
+        echo Starting Herd...
+        start "" "C:\Program Files\Herd\Herd.exe"
+        echo Waiting for Herd to initialize...
+        timeout /t 10 /nobreak > nul
+    ) else (
+        echo Herd process found but not responding, waiting...
+        timeout /t 8 /nobreak > nul
+        
+        :: Check again after waiting
+        curl -s --connect-timeout 2 http://localhost > nul 2>&1
+        if errorlevel 1 (
+            echo WARNING: Herd still not responding. Continuing anyway...
+        ) else (
+            echo Herd is now responding.
+        )
+    )
 ) else (
-    echo Herd is already running.
+    echo Herd is running and responding.
 )
 echo.
 
