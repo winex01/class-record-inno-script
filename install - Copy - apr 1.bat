@@ -1,5 +1,5 @@
 @echo off
-title Laravel + Filament Project Setup
+title Class Record Setup
 echo ========================================
 echo  Setting up Class Record Application
 echo ========================================

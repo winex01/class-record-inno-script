@@ -1,6 +1,5 @@
 @echo off
-title Laravel + Filament Project Setup
-
+title Class Record Setup
 echo ========================================
 echo  Setting up Class Record Application
 echo ========================================
@@ -10,8 +9,8 @@ echo.
 :: Add Windows Security Exclusion
 :: ----------------------------------------
 echo Adding Windows Security exclusion for this folder...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath '%~dp0'" >nul 2>&1
-echo Exclusion attempted for: %~dp0
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath '%~dp0'"
+echo Exclusion added for: %~dp0
 echo.
 
 :: ----------------------------------------
@@ -57,7 +56,7 @@ echo.
 :: ----------------------------------------
 echo Copying environment file...
 if not exist ".env" (
-    cmd /c "copy .env.example .env" > nul
+    cmd /c "copy .env.example .env"
     echo Environment file created.
 ) else (
     echo .env already exists, skipping copy.
@@ -71,7 +70,6 @@ echo Generating application key...
 findstr /r "APP_KEY=.\+" .env > nul 2>&1
 if errorlevel 1 (
     cmd /c "php artisan key:generate"
-    echo App key generated.
 ) else (
     echo App key already set, skipping.
 )
@@ -82,7 +80,6 @@ echo.
 :: ----------------------------------------
 echo Running database migrations...
 cmd /c "php artisan migrate --force --step"
-echo Migrations completed.
 echo.
 
 :: ----------------------------------------
@@ -95,21 +92,13 @@ cmd /c "php artisan config:cache"
 cmd /c "php artisan route:cache"
 cmd /c "php artisan event:cache"
 cmd /c "php artisan view:cache"
-echo Optimization complete.
 echo.
 
 :: ----------------------------------------
 :: Link storage
 :: ----------------------------------------
 echo Linking storage...
-
-if exist "public\storage" (
-    echo Storage link already exists, skipping.
-) else (
-    cmd /c "php artisan storage:link"
-    echo Storage linked successfully.
-)
-
+cmd /c "php artisan storage:link"
 echo.
 
 :: ----------------------------------------
