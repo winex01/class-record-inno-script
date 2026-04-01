@@ -28,7 +28,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: "D:\Herd\class-record\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; \
-Excludes: ".env,*.sqlite,node_modules\*,storage\logs\*,storage\framework\cache\*,storage\framework\sessions\*,storage\framework\views\*,storage\app\public\*,storage\app\private\*"
+; DONT COPY BELOW files 
+Excludes: ".env,*.sqlite,node_modules\*,storage\logs\*,storage\framework\cache\*,storage\framework\sessions\*,storage\framework\views\*,storage\app\public\*,storage\app\private\*,public\storage"
 Source: "D:\installer\Herd-1.27.0-setup.exe"; DestDir: "{app}"; Flags: deleteafterinstall; Check: not HerdIsInstalled()
 Source: "D:\inno setups scripts\class-record\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\inno setups scripts\class-record\install.bat"; DestDir: "{app}"; Flags: ignoreversion

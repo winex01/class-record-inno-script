@@ -109,7 +109,15 @@ echo.
 :: Link storage
 :: ----------------------------------------
 echo Linking storage...
+
+IF EXIST "public\storage" (
+    echo Existing storage link found. Recreating...
+    rmdir public\storage
+)
+
 cmd /c "php artisan storage:link"
+
+echo Storage linked successfully!
 echo.
 
 :: ----------------------------------------
