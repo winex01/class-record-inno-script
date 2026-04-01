@@ -78,7 +78,7 @@ echo.
 :: Generate application key
 :: ----------------------------------------
 echo Generating application key...
-findstr /r "APP_KEY=.\+" .env > nul 2>&1
+findstr /r "APP_KEY=base64:" .env > nul 2>&1
 if errorlevel 1 (
     cmd /c "php artisan key:generate"
 ) else (
