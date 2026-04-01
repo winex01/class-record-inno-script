@@ -121,6 +121,26 @@ echo Storage linked successfully!
 echo.
 
 :: ----------------------------------------
+:: LAUNCH APPLICATION
+:: ----------------------------------------
+echo Launching Class Record...
+
+:: Find Edge path (matching your Inno Setup function logic)
+set EDGE_PATH=
+
+:: Check Program Files (64-bit) first
+if exist "%ProgramFiles%\Microsoft\Edge\Application\msedge.exe" (
+    set EDGE_PATH="%ProgramFiles%\Microsoft\Edge\Application\msedge.exe"
+) else if exist "%ProgramFiles(x86)%\Microsoft\Edge\Application\msedge.exe" (
+    set EDGE_PATH="%ProgramFiles(x86)%\Microsoft\Edge\Application\msedge.exe"
+) else (
+    set EDGE_PATH="msedge.exe"
+)
+
+:: Launch Edge in kiosk fullscreen mode
+start "" %EDGE_PATH%  --app=http://class-record-client.test
+
+:: ----------------------------------------
 :: DONE
 :: ----------------------------------------
 echo ========================================

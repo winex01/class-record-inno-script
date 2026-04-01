@@ -37,8 +37,8 @@ Source: "D:\inno setups scripts\class-record\install.bat"; DestDir: "{app}"; Fla
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Laravel Herd"; ValueData: """C:\Program Files\Herd\Herd.exe"""; Flags: uninsdeletevalue
 
 [Icons]
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{code:GetEdgePath}"; Parameters: "--app=http://class-record-client.test"; IconFilename: "{app}\icon.ico"
-Name: "{group}\{#MyAppName}"; Filename: "{code:GetEdgePath}"; Parameters: "--app=http://class-record-client.test"; IconFilename: "{app}\icon.ico"
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{code:GetEdgePath}"; Parameters: "--app=http://class-record-client.test --edge-kiosk-type=fullscreen"; IconFilename: "{app}\icon.ico"; Flags: runmaximized
+Name: "{group}\{#MyAppName}"; Filename: "{code:GetEdgePath}"; Parameters: "--app=http://class-record-client.test --edge-kiosk-type=fullscreen"; IconFilename: "{app}\icon.ico"; Flags: runmaximized
 
 [Run]
 ; Install Herd silently if not already installed
