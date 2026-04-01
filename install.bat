@@ -17,47 +17,41 @@ echo.
 :: Start Herd if not running
 :: ----------------------------------------
 echo Checking Herd status...
+tasklist /FI "IMAGENAME eq Herd.exe" /NH
+echo.
 
-:: Check if Herd's web server is responding
-curl -s --connect-timeout 2 http://localhost > nul 2>&1
-if errorlevel 1 (
-    echo Herd not responding, checking if process exists...
-    tasklist /FI "IMAGENAME eq Herd.exe" /NH | find /I "Herd.exe" > nul
-    if errorlevel 1 (
-        echo Starting Herd...
-        start "" "C:\Program Files\Herd\Herd.exe"
-        echo Waiting for Herd to initialize...
-        timeout /t 10 /nobreak > nul
+echo Starting Herd if not running...
+if not exist "C:\Program Files\Herd\Herd.exe" (
+    echo Herd not installed! Installing Herd...
+    echo.
+    if exist "%~dp0Herd-1.27.0-setup.exe" (
+        echo Running Herd installer...
+        "%~dp0Herd-1.27.0-setup.exe" /S
+        echo Herd installation complete.
+        timeout /t 5 /nobreak > nul
     ) else (
-        echo Herd process found but not responding, waiting...
-        timeout /t 8 /nobreak > nul
-        
-        :: Check again after waiting
-        curl -s --connect-timeout 2 http://localhost > nul 2>&1
-        if errorlevel 1 (
-            echo WARNING: Herd still not responding. Continuing anyway...
-        ) else (
-            echo Herd is now responding.
-        )
+        echo ERROR: Herd installer not found!
+        echo Please install Herd manually from https://herd.laravel.com
+        pause
+        exit
     )
+)
+
+tasklist /FI "IMAGENAME eq Herd.exe" /NH | find /I "Herd.exe" > nul
+if errorlevel 1 (
+    echo Starting Herd...
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "Start-Process 'C:\Program Files\Herd\Herd.exe' -WindowStyle Hidden"
+    timeout /t 5 /nobreak > nul
 ) else (
-    echo Herd is running and responding.
+    echo Herd is already running.
 )
 echo.
 
 :: ----------------------------------------
-:: Park the parent folder in Herd
+:: Add Herd PHP to PATH
 :: ----------------------------------------
-echo Parking the parent folder...
-cd /d "%USERPROFILE%\Documents\Class Record"
-
-if exist "C:\Program Files\Herd\bin\herd.exe" (
-    echo y | "C:\Program Files\Herd\bin\herd.exe" park > nul 2>&1
-) else (
-    echo y | herd park > nul 2>&1
-)
-echo Path added successfully.
-timeout /t 1 /nobreak > nul
+echo Adding Herd PHP to PATH...
+set "PATH=%USERPROFILE%\.config\herd\bin;%PATH%"
 echo.
 
 :: ----------------------------------------

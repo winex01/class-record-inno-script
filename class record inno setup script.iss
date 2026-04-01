@@ -43,13 +43,7 @@ Name: "{group}\{#MyAppName}"; Filename: "{code:GetEdgePath}"; Parameters: "--app
 
 [Run]
 ; Install Herd silently if not already installed
-Filename: "{app}\Herd-1.27.0-setup.exe"; Parameters: "/S"; StatusMsg: "Installing Laravel Herd..."; \
-  Flags: waituntilterminated; Check: not HerdIsInstalled()
-
-; Wait for Herd to fully initialize after installation
-Filename: "{cmd}"; Parameters: "/C timeout /t 10 /nobreak"; \
-  Flags: waituntilterminated; Check: not HerdIsInstalled()
-  
+Filename: "{app}\Herd-1.27.0-setup.exe"; Parameters: "/S"; StatusMsg: "Installing Laravel Herd... Please wait this will take a few moments."; Flags: waituntilterminated; Check: not HerdIsInstalled()
 ; Run your app's setup bat after dependencies are ready
 Filename: "{app}\install.bat"; StatusMsg: "Setting up your application..."; Flags: waituntilterminated
 
